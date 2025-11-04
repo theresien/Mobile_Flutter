@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/cart_provider.dart';
+import '../theme/app_theme.dart';
+import 'checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -8,21 +11,56 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Panier'),
+        backgroundColor: Colors.white.withOpacity(0.95),
+        elevation: 0,
+        title: Text(
+          'Mon panier',
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 24,
+            fontWeight: FontWeight.w800,
+            color: AppTheme.onSurfaceColor,
+          ),
+        ),
+        centerTitle: false,
       ),
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
           if (cartProvider.items.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_bag_outlined,
+                      size: 64,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                   Text(
                     'Votre panier est vide',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.onSurfaceColor,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ajoutez des produits pour commencer',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF64748B),
+                    ),
                   ),
                 ],
               ),
@@ -36,20 +74,29 @@ class CartScreen extends StatelessWidget {
                   itemCount: cartProvider.items.length,
                   itemBuilder: (context, index) {
                     final item = cartProvider.items[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [AppTheme.cardShadow],
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(20),
                         child: Row(
                           children: [
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: 70,
+                              height: 70,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(16),
+                                gradient: AppTheme.surfaceGradient,
                               ),
-                              child: const Icon(Icons.phone_android),
+                              child: const Icon(
+                                Icons.phone_iphone_rounded,
+                                color: AppTheme.primaryColor,
+                                size: 28,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
@@ -58,37 +105,65 @@ class CartScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     item.product.name,
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 16,
+                                      color: AppTheme.onSurfaceColor,
+                                    ),
                                   ),
+                                  const SizedBox(height: 6),
                                   Text(
                                     item.product.formattedPrice,
-                                    style: TextStyle(color: Colors.grey[600]),
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: AppTheme.primaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.remove),
-                                  onPressed: () {
-                                    cartProvider.updateQuantity(
-                                      item.product.id!,
-                                      item.quantity - 1,
-                                    );
-                                  },
-                                ),
-                                Text('${item.quantity}'),
-                                IconButton(
-                                  icon: const Icon(Icons.add),
-                                  onPressed: () {
-                                    cartProvider.updateQuantity(
-                                      item.product.id!,
-                                      item.quantity + 1,
-                                    );
-                                  },
-                                ),
-                              ],
+                            Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove_rounded, size: 20),
+                                    color: AppTheme.primaryColor,
+                                    onPressed: () {
+                                      cartProvider.updateQuantity(
+                                        item.product.id!,
+                                        item.quantity - 1,
+                                      );
+                                    },
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    child: Text(
+                                      '${item.quantity}',
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16,
+                                        color: AppTheme.onSurfaceColor,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.add_rounded, size: 20),
+                                    color: AppTheme.primaryColor,
+                                    onPressed: () {
+                                      cartProvider.updateQuantity(
+                                        item.product.id!,
+                                        item.quantity + 1,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -98,39 +173,75 @@ class CartScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, -3),
-                    ),
-                  ],
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [AppTheme.elevatedShadow],
                 ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           'Total:',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.onSurfaceColor,
+                          ),
                         ),
                         Text(
                           '${cartProvider.totalAmount.toStringAsFixed(0)} MGA',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            color: AppTheme.primaryColor,
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('Commander'),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CheckoutScreen(),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ).copyWith(
+                          backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                        ),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: AppTheme.primaryGradient,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Commander',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],

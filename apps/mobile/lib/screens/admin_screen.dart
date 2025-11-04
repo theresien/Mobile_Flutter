@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/product_provider.dart';
 import 'product_form_screen.dart';
+import 'sales_screen.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -26,6 +27,17 @@ class _AdminScreenState extends State<AdminScreen> {
         title: const Text('Gestion des téléphones'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.receipt_long),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SalesScreen(),
+                ),
+              );
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(
@@ -45,24 +57,65 @@ class _AdminScreenState extends State<AdminScreen> {
           }
 
           if (productProvider.products.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.phone_android, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text(
+                  const Icon(Icons.phone_android, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  const Text(
                     'Aucun téléphone',
                     style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SalesScreen(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.receipt_long),
+                    label: const Text('Voir les ventes'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF00D4AA),
+                      foregroundColor: Colors.white,
+                    ),
                   ),
                 ],
               ),
             );
           }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: productProvider.products.length,
+          return Column(
+            children: [
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(16),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SalesScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.receipt_long),
+                  label: const Text('📊 Voir toutes les ventes'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF00D4AA),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                  itemCount: productProvider.products.length,
             itemBuilder: (context, index) {
               final product = productProvider.products[index];
               return Card(
@@ -122,6 +175,9 @@ class _AdminScreenState extends State<AdminScreen> {
                 ),
               );
             },
+                ),
+              ),
+            ],
           );
         },
       ),

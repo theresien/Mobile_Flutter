@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
 
@@ -19,6 +21,8 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   final _priceController = TextEditingController();
   final _imageUrlController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -107,11 +111,90 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
               },
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _imageUrlController,
-              decoration: const InputDecoration(
-                labelText: 'URL de l\'image',
-                border: OutlineInputBorder(),
+            // Section Image
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Photo du téléphone',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_selectedImage != null)
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: FileImage(_selectedImage!),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  else if (_imageUrlController.text.isNotEmpty)
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.grey[200],
+                      ),
+                      child: const Icon(Icons.phone_android, size: 60),
+                    )
+                  else
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.grey[100],
+                        border: Border.all(color: Colors.grey.shade300, style: BorderStyle.solid),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_photo_alternate, size: 48, color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text('Aucune image sélectionnée', style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.camera),
+                          icon: const Icon(Icons.camera_alt, size: 20),
+                          label: const Text('Appareil photo'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[100],
+                            foregroundColor: Colors.black87,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _pickImage(ImageSource.gallery),
+                          icon: const Icon(Icons.photo_library, size: 20),
+                          label: const Text('Galerie'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[100],
+                            foregroundColor: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
@@ -145,6 +228,27 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     );
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+          _imageUrlController.text = image.path;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur lors de la sélection: $e')),
+      );
+    }
+  }
+
   void _saveProduct() async {
     if (_formKey.currentState!.validate()) {
       final product = Product(
@@ -152,7 +256,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
         name: _nameController.text,
         brand: _brandController.text,
         price: double.parse(_priceController.text),
-        imageUrl: _imageUrlController.text,
+        imageUrl: _selectedImage?.path ?? _imageUrlController.text,
         description: _descriptionController.text,
       );
 
