@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/cart_provider.dart';
 import '../providers/order_provider.dart';
+import '../providers/theme_provider.dart';
+import '../theme/app_theme.dart';
 import '../models/order.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -21,18 +24,45 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Finaliser la commande',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF1A1A1A),
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
+        actions: [
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return Container(
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 1,
+                  ),
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    themeProvider.isDarkMode
+                        ? Icons.light_mode
+                        : Icons.dark_mode,
+                    color: Theme.of(context).iconTheme.color,
+                    size: 22,
+                  ),
+                  onPressed: () => themeProvider.toggleTheme(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
@@ -48,19 +78,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE5E5E5)),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Informations de livraison',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1A1A1A),
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -115,23 +147,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE5E5E5)),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Méthode de paiement',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1A1A1A),
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 16),
-                            ...['Mobile Money', 'Orange Money', 'Airtel Money'].map(
+                            ...[
+                              'Mobile Money',
+                              'Orange Money',
+                              'Airtel Money',
+                            ].map(
                               (method) => RadioListTile<String>(
                                 title: Text(method),
                                 value: method,
@@ -141,7 +179,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     _paymentMethod = value!;
                                   });
                                 },
-                                activeColor: const Color(0xFF00D4AA),
+                                activeColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
                               ),
                             ),
                           ],
@@ -152,19 +192,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE5E5E5)),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Résumé de la commande',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF1A1A1A),
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -172,7 +214,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               (item) => Padding(
                                 padding: const EdgeInsets.only(bottom: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: Text(
@@ -194,19 +237,24 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   'Total:',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                 ),
                                 Text(
                                   '${cartProvider.totalAmount.toStringAsFixed(0)} MGA',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF00D4AA),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                   ),
                                 ),
                               ],
@@ -219,14 +267,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
                 // Bouton payer
                 Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(
+                    16,
+                    16,
+                    16,
+                    16 + MediaQuery.of(context).padding.bottom,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x1A000000),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 10,
-                        offset: Offset(0, -2),
+                        offset: const Offset(0, -2),
                       ),
                     ],
                   ),
@@ -235,7 +288,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     child: ElevatedButton(
                       onPressed: () => _processPayment(cartProvider),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00D4AA),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -266,8 +319,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF00D4AA)),
+        builder: (context) => Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       );
 
@@ -278,17 +333,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         buyerName: _nameController.text,
         buyerEmail: _emailController.text,
         buyerPhone: _phoneController.text,
-        items: cartProvider.items.map((item) => OrderItem(
-          productId: item.product.id!,
-          productName: item.product.name,
-          productBrand: item.product.brand,
-          productPrice: item.product.price,
-          quantity: item.quantity,
-        )).toList(),
+        items: cartProvider.items
+            .map(
+              (item) => OrderItem(
+                productId: item.product.id!,
+                productName: item.product.name,
+                productBrand: item.product.brand,
+                productPrice: item.product.price,
+                quantity: item.quantity,
+              ),
+            )
+            .toList(),
         totalAmount: cartProvider.totalAmount,
         orderDate: DateTime.now(),
         paymentMethod: _paymentMethod,
       );
+
+      if (!mounted) return;
 
       context.read<OrderProvider>().addOrder(order);
       cartProvider.clear();
@@ -297,9 +358,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       Navigator.pop(context); // Retour au panier
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Paiement réussi ! Commande confirmée.'),
-          backgroundColor: Color(0xFF00D4AA),
+        SnackBar(
+          content: const Text('Paiement réussi ! Commande confirmée.'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
       );
     }

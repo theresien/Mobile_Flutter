@@ -30,11 +30,13 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return MaterialApp(
-            title: 'Vente Téléphone',
+            title: 'Smartphone Sell',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: themeProvider.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
             home: const MainScreen(),
           );
         },
@@ -69,11 +71,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -85,61 +87,77 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             type: BottomNavigationBarType.fixed,
             currentIndex: _selectedIndex,
             onTap: (index) => setState(() => _selectedIndex = index),
-            selectedItemColor: const Color(0xFF6366F1),
-            unselectedItemColor: const Color(0xFF64748B),
+            selectedItemColor: AppTheme.primaryColor,
+            unselectedItemColor: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.6),
             selectedFontSize: 12,
             unselectedFontSize: 11,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             selectedLabelStyle: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
             ),
             unselectedLabelStyle: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.w500,
+              letterSpacing: 0.1,
             ),
             items: [
               BottomNavigationBarItem(
                 icon: Container(
                   padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.home_outlined, size: 22),
+                  child: const Icon(Icons.home_outlined, size: 24),
                 ),
                 activeIcon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    gradient: AppTheme.primaryGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.home_rounded, size: 22),
+                  child: const Icon(
+                    Icons.home_rounded,
+                    size: 24,
+                    color: Colors.white,
+                  ),
                 ),
                 label: 'Accueil',
               ),
               BottomNavigationBarItem(
                 icon: Container(
                   padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.shopping_bag_outlined, size: 22),
+                  child: const Icon(Icons.shopping_bag_outlined, size: 24),
                 ),
                 activeIcon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    gradient: AppTheme.primaryGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.shopping_bag_rounded, size: 22),
+                  child: const Icon(
+                    Icons.shopping_bag_rounded,
+                    size: 24,
+                    color: Colors.white,
+                  ),
                 ),
                 label: 'Panier',
               ),
               BottomNavigationBarItem(
                 icon: Container(
                   padding: const EdgeInsets.all(8),
-                  child: const Icon(Icons.add_circle_outline, size: 22),
+                  child: const Icon(Icons.add_circle_outline, size: 24),
                 ),
                 activeIcon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withOpacity(0.1),
+                    gradient: AppTheme.primaryGradient,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.add_circle_rounded, size: 22),
+                  child: const Icon(
+                    Icons.add_circle_rounded,
+                    size: 24,
+                    color: Colors.white,
+                  ),
                 ),
                 label: 'Ajouter',
               ),

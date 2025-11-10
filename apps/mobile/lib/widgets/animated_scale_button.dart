@@ -26,17 +26,11 @@ class _AnimatedScaleButtonState extends State<AnimatedScaleButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.scaleValue,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -51,6 +45,7 @@ class _AnimatedScaleButtonState extends State<AnimatedScaleButton>
 
   void _onTapUp(TapUpDetails details) {
     _controller.reverse();
+    widget.onTap?.call();
   }
 
   void _onTapCancel() {

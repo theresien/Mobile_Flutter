@@ -51,23 +51,23 @@ class AppTheme {
       textTheme: GoogleFonts.plusJakartaSansTextTheme().copyWith(
         headlineLarge: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w800,
-          color: onSurfaceColor,
+          color: textColor,
         ),
         headlineMedium: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w700,
-          color: onSurfaceColor,
+          color: textColor,
         ),
         titleLarge: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w600,
-          color: onSurfaceColor,
+          color: textColor,
         ),
         bodyLarge: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w500,
-          color: onSurfaceColor,
+          color: textColor,
         ),
         bodyMedium: GoogleFonts.plusJakartaSans(
           fontWeight: FontWeight.w400,
-          color: onSurfaceColor,
+          color: textColor,
         ),
       ),
       appBarTheme: AppBarTheme(
@@ -82,7 +82,7 @@ class AppTheme {
         titleTextStyle: GoogleFonts.plusJakartaSans(
           fontSize: 24,
           fontWeight: FontWeight.w800,
-          color: onSurfaceColor,
+          color: textColor,
         ),
       ),
       cardTheme: CardThemeData(
@@ -126,7 +126,7 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         hintStyle: GoogleFonts.plusJakartaSans(
-          color: const Color(0xFF64748B),
+          color: subtitleColor,
           fontWeight: FontWeight.w500,
         ),
       ),

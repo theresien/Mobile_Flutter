@@ -18,18 +18,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 120,
             floating: true,
             pinned: true,
-            backgroundColor: Colors.white.withOpacity(0.95),
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surface.withOpacity(0.95),
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(left: 20, bottom: 16),
@@ -38,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: const Color(0xFF0F172A),
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               background: Container(
@@ -47,8 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.white,
-                      const Color(0xFF6366F1).withOpacity(0.02),
+                      Theme.of(context).colorScheme.surface,
+                      Theme.of(context).colorScheme.primary.withOpacity(0.02),
                     ],
                   ),
                 ),
@@ -69,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: IconButton(
                       icon: Icon(
-                        themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                        themeProvider.isDarkMode
+                            ? Icons.light_mode
+                            : Icons.dark_mode,
                         color: Theme.of(context).iconTheme.color,
                         size: 22,
                       ),
@@ -100,14 +103,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) =>
                             const SearchScreen(),
-                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                          return SlideTransition(
-                            position: animation.drive(
-                              Tween(begin: const Offset(1.0, 0.0), end: Offset.zero),
-                            ),
-                            child: child,
-                          );
-                        },
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              return SlideTransition(
+                                position: animation.drive(
+                                  Tween(
+                                    begin: const Offset(1.0, 0.0),
+                                    end: Offset.zero,
+                                  ),
+                                ),
+                                child: child,
+                              );
+                            },
                       ),
                     );
                   },
@@ -115,6 +122,187 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+          // Hero Banner Section
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              height: 180,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppTheme.primaryColor.withOpacity(0.1),
+                    AppTheme.secondaryColor.withOpacity(0.1),
+                  ],
+                ),
+                boxShadow: [AppTheme.cardShadow],
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    right: -20,
+                    top: -20,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryColor,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'PROMOTION',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Jusqu\'à -30% sur\nles iPhones reconditionnés',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            height: 1.2,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Garantie 12 mois • Livraison gratuite',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.7),
+                            letterSpacing: -0.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Featured Products Carousel
+          Consumer<ProductProvider>(
+            builder: (context, productProvider, child) {
+              final featuredProducts = productProvider.products
+                  .take(5)
+                  .toList();
+              if (featuredProducts.isEmpty)
+                return const SliverToBoxAdapter(child: SizedBox.shrink());
+
+              return SliverToBoxAdapter(
+                child: Container(
+                  margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                gradient: AppTheme.primaryGradient,
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: const Icon(
+                                Icons.star_rounded,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Produits populaires',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Les mieux notés par nos clients',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 280,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: featuredProducts.length,
+                          itemBuilder: (context, index) {
+                            final product = featuredProducts[index];
+                            return Container(
+                              width: 200,
+                              margin: EdgeInsets.only(
+                                right: index == featuredProducts.length - 1
+                                    ? 0
+                                    : 16,
+                              ),
+                              child: AnimatedContainer(
+                                duration: Duration(
+                                  milliseconds: 300 + (index * 100),
+                                ),
+                                curve: Curves.easeOutBack,
+                                child: ProductCard(product: product),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+
           Consumer<ProductProvider>(
             builder: (context, productProvider, child) {
               return SliverToBoxAdapter(
@@ -122,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [AppTheme.cardShadow],
                   ),
@@ -149,19 +337,23 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Trouvez votre téléphone idéal',
+                                  'Catégories populaires',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
-                                    color: AppTheme.onSurfaceColor,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                 ),
                                 Text(
-                                  'Reconditionnés et garantis',
+                                  'Découvrez nos meilleures offres',
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color: const Color(0xFF64748B),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.7),
                                   ),
                                 ),
                               ],
@@ -179,12 +371,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             final category = productProvider.categories[index];
                             return Padding(
                               padding: EdgeInsets.only(
-                                right: index == productProvider.categories.length - 1 ? 0 : 12,
+                                right:
+                                    index ==
+                                        productProvider.categories.length - 1
+                                    ? 0
+                                    : 12,
                               ),
                               child: CategoryChip(
                                 category: category,
-                                isSelected: productProvider.selectedCategory == category,
-                                onPressed: () => productProvider.setCategory(category),
+                                isSelected:
+                                    productProvider.selectedCategory ==
+                                    category,
+                                onPressed: () =>
+                                    productProvider.setCategory(category),
                               ),
                             );
                           },
@@ -200,12 +399,10 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, productProvider, child) {
               if (productProvider.isLoading) {
                 return const SliverFillRemaining(
-                  child: Center(
-                    child: ModernLoading(size: 60),
-                  ),
+                  child: Center(child: ModernLoading(size: 60)),
                 );
               }
-              
+
               return SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
                 sliver: SliverMasonryGrid.count(
